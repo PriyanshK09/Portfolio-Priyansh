@@ -1,0 +1,28 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path 
+    d="M16 2L3 9L16 16L29 9L16 2Z" 
+    fill="#00E5A0"
+  />
+  <path 
+    d="M3 23L16 30L29 23V9L16 16L3 9V23Z" 
+    fill="#6B3BFF"
+    fill-opacity="0.5"
+  />
+  <path 
+    d="M16 16L3 9V23L16 30V16Z" 
+    fill="#00E5A0"
+    fill-opacity="0.7"
+  />
+  <text 
+    x="16" 
+    y="19" 
+    font-family="Space Grotesk" 
+    font-size="14" 
+    font-weight="bold" 
+    fill="white" 
+    text-anchor="middle"
+    dominant-baseline="middle"
+  >
+    PK
+  </text>
+</svg>
