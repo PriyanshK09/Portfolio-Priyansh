@@ -50,7 +50,7 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
 
           {/* PDF Viewer */}
           <iframe
-            src="/resume.pdf#toolbar=0"
+            src="/assets/resume.pdf#toolbar=0"
             className="w-full h-full"
             title="Resume"
           />

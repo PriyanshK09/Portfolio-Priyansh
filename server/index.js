@@ -16,10 +16,10 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 
-// CORS configuration
+// Update CORS configuration
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
+    ? 'https://priyanshk.netlify.app'  // Your Netlify URL
     : 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],

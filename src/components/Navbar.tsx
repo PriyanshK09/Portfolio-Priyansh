@@ -56,7 +56,7 @@ const Navbar = () => {
                 duration={500}
                 className="flex items-center cursor-pointer group"
               >
-                <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
+                <img src="/assets/logo-D_pr2kY8.svg" alt="Logo" className="h-8 w-8" />
                 <div className="ml-2">
                   <span className="text-lg font-bold">Priyansh's</span>
                   <span className="text-lg font-bold text-[var(--primary)]"> Portfolio</span>
