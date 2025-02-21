@@ -11,7 +11,7 @@ const Hero = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center text-center">
           <motion.h1 

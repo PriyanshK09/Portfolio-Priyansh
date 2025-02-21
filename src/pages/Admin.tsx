@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { Lock } from 'lucide-react';
+import { Lock, MessageSquare, Users } from 'lucide-react';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface VisitorData {
   timestamp: string;
+  localTime: string;
   browser: string;
   os: string;
   device: string;
   ip: string;
   path: string;
+  section: string;
 }
 
 interface Message {
@@ -27,46 +29,71 @@ const Admin = () => {
   const [error, setError] = useState('');
   const [visitors, setVisitors] = useState<VisitorData[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(`${apiUrl}/api/admin/login`, { password });
-      localStorage.setItem('adminToken', response.data.token);
-      setIsAuthenticated(true);
-      setError('');
-    } catch (error) {
-      setError('Invalid password');
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     if (token) {
-      setIsAuthenticated(true);
       fetchData(token);
+    } else {
+      setLoading(false);
     }
   }, []);
 
   const fetchData = async (token: string) => {
     try {
+      setLoading(true);
+      setError(null);
+
+      const config = {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 5000 // 5 second timeout
+      };
+
       const [visitorsRes, messagesRes] = await Promise.all([
-        axios.get(`${apiUrl}/api/admin/visitors`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        axios.get(`${apiUrl}/api/admin/messages`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
+        axios.get(`${apiUrl}/api/admin/visitors`, config),
+        axios.get(`${apiUrl}/api/admin/messages`, config)
       ]);
 
-      setVisitors(visitorsRes.data);
-      setMessages(messagesRes.data);
+      if (visitorsRes.data) setVisitors(visitorsRes.data);
+      if (messagesRes.data) setMessages(messagesRes.data);
+      setIsAuthenticated(true);
     } catch (error) {
       console.error('Error fetching data:', error);
-      setIsAuthenticated(false);
-      localStorage.removeItem('adminToken');
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        setIsAuthenticated(false);
+        localStorage.removeItem('adminToken');
+      }
+      setError('Failed to fetch data');
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const password = (e.currentTarget.elements.namedItem('password') as HTMLInputElement).value;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.post(`${apiUrl}/api/admin/login`, { password });
+      localStorage.setItem('adminToken', response.data.token);
+      await fetchData(response.data.token);
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Invalid password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  }
 
   if (!isAuthenticated) {
     return (
@@ -114,34 +141,73 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen pt-24 px-4 pb-12 bg-[var(--dark-bg)]">
+      <div className="max-w-[90rem] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="space-y-8"
         >
-          <h1 className="text-3xl font-bold gradient-text">Admin Dashboard</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold gradient-text">Admin Dashboard</h1>
+            <button
+              onClick={() => {
+                localStorage.removeItem('adminToken');
+                setIsAuthenticated(false);
+              }}
+              className="px-4 py-2 text-sm rounded-lg border border-red-500/20 text-red-500 hover:bg-red-500/10"
+            >
+              Logout
+            </button>
+          </div>
 
+          {/* Stats Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="glass rounded-xl p-6 flex items-center gap-4">
+              <div className="p-4 rounded-full bg-primary/10">
+                <Users className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-400">Total Visitors</p>
+                <p className="text-2xl font-bold">{visitors.length}</p>
+              </div>
+            </div>
+            <div className="glass rounded-xl p-6 flex items-center gap-4">
+              <div className="p-4 rounded-full bg-primary/10">
+                <MessageSquare className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-400">Total Messages</p>
+                <p className="text-2xl font-bold">{messages.length}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Messages Table */}
           <div className="glass rounded-xl p-6">
-            <h2 className="text-xl font-bold mb-4">Recent Messages</h2>
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Recent Messages
+            </h2>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full border-collapse">
                 <thead>
                   <tr className="text-left border-b border-white/10">
-                    <th className="pb-2">Name</th>
-                    <th className="pb-2">Email</th>
-                    <th className="pb-2">Message</th>
-                    <th className="pb-2">Date</th>
+                    <th className="pb-4 pr-6 font-medium">Name</th>
+                    <th className="pb-4 pr-6 font-medium">Email</th>
+                    <th className="pb-4 pr-6 font-medium">Message</th>
+                    <th className="pb-4 pr-6 font-medium">Date</th>
                   </tr>
                 </thead>
                 <tbody>
                   {messages.map((message, index) => (
-                    <tr key={index} className="border-b border-white/5">
-                      <td className="py-3">{message.name}</td>
-                      <td className="py-3">{message.email}</td>
-                      <td className="py-3">{message.message}</td>
-                      <td className="py-3">
+                    <tr key={index} className="border-b border-white/5 hover:bg-white/5">
+                      <td className="py-4 pr-6">{message.name}</td>
+                      <td className="py-4 pr-6 text-primary">{message.email}</td>
+                      <td className="py-4 pr-6">
+                        <div className="max-w-md truncate">{message.message}</div>
+                      </td>
+                      <td className="py-4 pr-6 text-gray-400">
                         {new Date(message.timestamp).toLocaleDateString()}
                       </td>
                     </tr>
@@ -151,29 +217,43 @@ const Admin = () => {
             </div>
           </div>
 
+          {/* Visitors Table */}
           <div className="glass rounded-xl p-6">
-            <h2 className="text-xl font-bold mb-4">Recent Visitors</h2>
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Recent Visitors
+            </h2>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full border-collapse">
                 <thead>
                   <tr className="text-left border-b border-white/10">
-                    <th className="pb-2">Date</th>
-                    <th className="pb-2">Browser</th>
-                    <th className="pb-2">OS</th>
-                    <th className="pb-2">Device</th>
-                    <th className="pb-2">Path</th>
+                    <th className="pb-4 pr-6 font-medium">Time</th>
+                    <th className="pb-4 pr-6 font-medium">Section</th>
+                    <th className="pb-4 pr-6 font-medium">IP Address</th>
+                    <th className="pb-4 pr-6 font-medium">Device Info</th>
                   </tr>
                 </thead>
                 <tbody>
                   {visitors.map((visitor, index) => (
-                    <tr key={index} className="border-b border-white/5">
-                      <td className="py-3">
-                        {new Date(visitor.timestamp).toLocaleDateString()}
+                    <tr key={index} className="border-b border-white/5 hover:bg-white/5">
+                      <td className="py-4 pr-6 whitespace-nowrap text-gray-400">
+                        {visitor.localTime}
                       </td>
-                      <td className="py-3">{visitor.browser}</td>
-                      <td className="py-3">{visitor.os}</td>
-                      <td className="py-3">{visitor.device}</td>
-                      <td className="py-3">{visitor.path}</td>
+                      <td className="py-4 pr-6">
+                        <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">
+                          {visitor.section}
+                        </span>
+                      </td>
+                      <td className="py-4 pr-6 font-mono text-sm">{visitor.ip}</td>
+                      <td className="py-4 pr-6">
+                        <div className="text-sm">
+                          <span className="text-gray-400">{visitor.browser}</span>
+                          <span className="mx-2">·</span>
+                          <span className="text-gray-400">{visitor.os}</span>
+                          <span className="mx-2">·</span>
+                          <span className="text-primary">{visitor.device}</span>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

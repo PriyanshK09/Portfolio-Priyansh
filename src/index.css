@@ -89,6 +89,26 @@
            font-medium hover:opacity-90 transition-all duration-300
            flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed;
   }
+
+  .admin-table {
+    @apply w-full border-collapse;
+  }
+
+  .admin-table th {
+    @apply pb-4 pr-6 font-medium text-left;
+  }
+
+  .admin-table td {
+    @apply py-4 pr-6;
+  }
+
+  .admin-table tr {
+    @apply border-b border-white/5 hover:bg-white/5 transition-colors;
+  }
+
+  .stat-card {
+    @apply glass rounded-xl p-6 flex items-center gap-4;
+  }
 }
 
 /* Custom scrollbar */

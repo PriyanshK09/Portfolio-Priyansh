@@ -25,10 +25,12 @@ export interface Certificate {
 
 export interface VisitorData {
   timestamp: Date;
+  localTime: string;
   browser: string;
   os: string;
   device: string;
   ip: string;
+  path: string;
 }
 
 export interface ContactForm {

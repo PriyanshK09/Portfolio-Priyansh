@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import UAParser from 'ua-parser-js';
 import { contactRouter } from './routes/contact.js';
 import { adminRouter } from './routes/admin.js';
 import { visitorMiddleware } from './middleware/visitor.js';
@@ -13,20 +12,68 @@ dotenv.config();
 
 const app = express();
 
-// Security middleware
-app.use(helmet());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
+// Basic middleware
 app.use(express.json());
+app.use(helmet());
 
-// Rate limiting
+// CORS configuration
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL 
+    : 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Custom IP detection middleware
+app.use((req, res, next) => {
+  req.realIp = req.ip || 
+               req.connection.remoteAddress || 
+               req.socket.remoteAddress || 
+               req.connection.socket?.remoteAddress;
+  next();
+});
+
+// Remove or comment out debug middleware
+// app.use((req, res, next) => {
+//   console.log(`${req.method} ${req.path}`);
+//   next();
+// });
+
+// Rate limiting configuration
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Custom key generator using our detected IP
+  keyGenerator: (req) => req.realIp,
+  skip: (req) => req.path.startsWith('/api/admin') // Skip rate limiting for admin routes
 });
-app.use(limiter);
+
+// Apply rate limiter to non-admin routes
+app.use('/api', (req, res, next) => {
+  if (!req.path.startsWith('/admin')) {
+    limiter(req, res, next);
+  } else {
+    next();
+  }
+});
+
+// Track endpoint should be before general visitorMiddleware
+app.post('/api/track', async (req, res) => {
+  try {
+    const { path } = req.body;
+    req.trackedPath = path;
+    await visitorMiddleware(req, res, () => {
+      res.status(200).json({ message: 'ok' });
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to track' });
+  }
+});
 
 // Track visitors
 app.use(visitorMiddleware);
@@ -35,8 +82,19 @@ app.use(visitorMiddleware);
 app.use('/api/contact', contactRouter);
 app.use('/api/admin', adminRouter);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Global error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  socketTimeoutMS: 45000, // Close sockets after 45s
+})
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
