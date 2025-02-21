@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import { contactRouter } from './routes/contact.js';
 import { adminRouter } from './routes/admin.js';
 import { visitorMiddleware } from './middleware/visitor.js';
+import { healthRouter } from './routes/health.js';
 
 dotenv.config();
 
@@ -78,6 +79,9 @@ app.post('/api/track', async (req, res) => {
 // Track visitors
 app.use(visitorMiddleware);
 
+// Add this before your other routes
+app.use('/health', healthRouter);
+
 // Routes
 app.use('/api/contact', contactRouter);
 app.use('/api/admin', adminRouter);
@@ -97,6 +101,9 @@ mongoose.connect(process.env.MONGODB_URI, {
 })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
+
+// Add this after MongoDB connection
+app.set('mongoose', mongoose);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
