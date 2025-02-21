@@ -116,6 +116,7 @@ Access the admin dashboard at `/admin` with the following features:
 
 The website is deployed using:
 - Frontend: [Netlify](https://priyanshk.netlify.app/)
+- Backend: [Render](https://portfolio-priyansh.onrender.com/health)
 
 ## 📝 License
 
