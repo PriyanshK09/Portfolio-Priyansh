@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Menu, X, FileText } from 'lucide-react';
 import { Link } from 'react-scroll';
-import { socialLinks } from '../data';
 
 const Logo = () => (
   <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -12,44 +11,101 @@ const Logo = () => (
   </svg>
 );
 
+const navItems = [
+  { id: 'hero', label: 'Home' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'contact', label: 'Contact' }
+];
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navItems = ['home', 'about', 'projects', 'contact'];
+  const [activeSection, setActiveSection] = useState('hero');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('section[id]');
+      const scrollPosition = window.scrollY + 100; // Offset for better detection
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+          setActiveSection(section.id);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-[var(--dark-bg)]/80 backdrop-blur-lg border-b border-[var(--border-color)]">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link
-            to="hero"
-            smooth={true}
-            duration={500}
-            className="flex items-center cursor-pointer"
-          >
-            <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
-            <span className="ml-2 text-lg font-bold">Priyansh</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center justify-center flex-1">
-            {navItems.map((item) => (
-              <Link
-                key={item}
-                to={item}
-                smooth={true}
-                duration={500}
-                className="px-6 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors cursor-pointer capitalize"
-                activeClass="text-white"
-                spy={true}
-              >
-                {item}
-              </Link>
-            ))}
+          {/* Left: Logo and Title */}
+          <div className="flex-shrink-0">
+            <Link
+              to="hero"
+              smooth={true}
+              duration={500}
+              className="flex items-center cursor-pointer group"
+            >
+              <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
+              <div className="ml-2">
+                <span className="text-lg font-bold">Priyansh's</span>
+                <span className="text-lg font-bold text-[var(--primary)]"> Portfolio</span>
+              </div>
+            </Link>
           </div>
 
-          {/* Mobile Navigation Button */}
+          {/* Center: Navigation Links */}
+          <div className="hidden md:flex items-center justify-center flex-1">
+            <div className="flex items-center space-x-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.id}
+                  to={item.id}
+                  smooth={true}
+                  duration={500}
+                  offset={-80}
+                  spy={true}
+                  className={`px-4 py-2 text-sm font-medium relative group cursor-pointer transition-colors duration-300 
+                    ${activeSection === item.id 
+                      ? 'text-[var(--primary)]' 
+                      : 'text-gray-300 hover:text-white'}`}
+                >
+                  {item.label}
+                  <span 
+                    className={`absolute inset-x-0 bottom-0 h-0.5 bg-[var(--primary)] transform origin-left transition-transform duration-300
+                      ${activeSection === item.id ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}
+                  />
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: Resume Button */}
+          <div className="hidden md:flex items-center flex-shrink-0">
+            <a
+              href="/resume.pdf" // Make sure to add your resume PDF in the public folder
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--primary)]/20 text-[var(--primary)] hover:bg-[var(--primary)]/10 transition-all duration-300"
+            >
+              <FileText size={16} />
+              <span>Resume</span>
+            </a>
+          </div>
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)}>
+            <button 
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+            >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
@@ -58,22 +114,33 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-dark-300">
+        <div className="md:hidden border-t border-[var(--border-color)]">
+          <div className="px-4 py-2 space-y-1 bg-[var(--dark-bg)]/95 backdrop-blur-lg">
             {navItems.map((item) => (
               <Link
-                key={item}
-                to={item}
+                key={item.id}
+                to={item.id}
                 smooth={true}
                 duration={500}
-                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white transition-colors cursor-pointer capitalize"
-                activeClass="text-white"
-                spy={true}
+                offset={-70}
+                className={`block px-4 py-2 text-base font-medium rounded-lg transition-colors
+                  ${activeSection === item.id
+                    ? 'text-[var(--primary)] bg-[var(--primary)]/5'
+                    : 'text-gray-300 hover:text-white hover:bg-white/5'}`}
                 onClick={() => setIsOpen(false)}
               >
-                {item}
+                {item.label}
               </Link>
             ))}
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-[var(--primary)] hover:bg-[var(--primary)]/5 rounded-lg transition-colors"
+            >
+              <FileText size={16} />
+              <span>Resume</span>
+            </a>
           </div>
         </div>
       )}

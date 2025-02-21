@@ -148,17 +148,26 @@ const Admin = () => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-8"
         >
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold gradient-text">Admin Dashboard</h1>
-            <button
-              onClick={() => {
-                localStorage.removeItem('adminToken');
-                setIsAuthenticated(false);
-              }}
-              className="px-4 py-2 text-sm rounded-lg border border-red-500/20 text-red-500 hover:bg-red-500/10"
-            >
-              Logout
-            </button>
+          <div className="glass rounded-xl p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-sm font-medium text-[var(--primary)] mb-2 block">
+                  Dashboard
+                </span>
+                <h1 className="text-3xl md:text-4xl font-bold">
+                  Admin Panel
+                </h1>
+              </div>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('adminToken');
+                  setIsAuthenticated(false);
+                }}
+                className="px-4 py-2 text-sm rounded-lg border border-[var(--primary)]/20 text-[var(--primary)] hover:bg-[var(--primary)]/10 transition-colors duration-300"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
           {/* Stats Overview */}
