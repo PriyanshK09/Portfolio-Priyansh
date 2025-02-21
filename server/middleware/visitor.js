@@ -1,6 +1,7 @@
 import UAParser from 'ua-parser-js';
 import { Visitor } from '../models/Visitor.js';
 
+// Update the visitor middleware to prevent duplicate views
 export const visitorMiddleware = async (req, res, next) => {
   try {
     // Skip tracking for admin routes and API endpoints except track endpoint
@@ -8,6 +9,14 @@ export const visitorMiddleware = async (req, res, next) => {
       return next();
     }
 
+    const { path, interactionType = 'view' } = req.body;
+
+    // Skip if no path provided
+    if (!path) {
+      return next();
+    }
+
+    // Create visitor data and track
     const parser = new UAParser(req.headers['user-agent']);
     const result = parser.getResult();
     
@@ -18,14 +27,28 @@ export const visitorMiddleware = async (req, res, next) => {
       'unknown'
     ).trim();
 
+    // For view interactions, check if this section was recently viewed by this IP
+    if (interactionType === 'view') {
+      const recentView = await Visitor.findOne({
+        ip,
+        path,
+        interactionType: 'view',
+        timestamp: { 
+          $gte: new Date(Date.now() - 5 * 60 * 1000) // Last 5 minutes
+        }
+      });
+
+      if (recentView) {
+        return res.status(200).json({ message: 'View already tracked' });
+      }
+    }
+
     const timestamp = new Date();
     const localTime = timestamp.toLocaleString('en-US', {
       timeZone: 'Asia/Kolkata',
       dateStyle: 'medium',
       timeStyle: 'medium'
     });
-
-    const { path, interactionType = 'view' } = req.body;
 
     // Map sections to readable names
     const sectionMap = {

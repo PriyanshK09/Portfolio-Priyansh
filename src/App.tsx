@@ -10,6 +10,8 @@ import axios from 'axios';
 
 // Create a PathTracker component
 const PathTracker = () => {
+  const [trackedSections, setTrackedSections] = useState<Set<string>>(new Set());
+
   useEffect(() => {
     // Skip tracking for admin pages
     if (window.location.pathname.includes('admin')) {
@@ -20,25 +22,28 @@ const PathTracker = () => {
     const links = document.querySelectorAll('a[href]');
     
     const options = {
-      threshold: 0.3, // Reduced threshold for better section detection
+      threshold: 0.3,
       rootMargin: '-20% 0px -20% 0px'
     };
 
     const trackInteraction = async (type: 'view' | 'click', elementId: string) => {
       try {
+        if (type === 'view' && trackedSections.has(elementId)) {
+          return; // Skip if already tracked this section
+        }
+
         await axios.post(`${import.meta.env.VITE_API_URL}/api/track`, {
           path: elementId,
           interactionType: type
         });
+
+        if (type === 'view') {
+          setTrackedSections(prev => new Set([...prev, elementId]));
+        }
       } catch (error) {
         // Silently fail for tracking errors
       }
     };
-
-    // Initial section tracking
-    sections.forEach(section => {
-      trackInteraction('view', section.id);
-    });
 
     // Track section views
     const observer = new IntersectionObserver((entries) => {
@@ -73,7 +78,7 @@ const PathTracker = () => {
         link.removeEventListener('click', handleLinkClick);
       });
     };
-  }, []);
+  }, [trackedSections]); // Add trackedSections as dependency
 
   return null;
 };
