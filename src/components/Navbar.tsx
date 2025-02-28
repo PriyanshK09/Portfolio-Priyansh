@@ -76,7 +76,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 w-full z-50 border-b border-[var(--border-color)] transition-all duration-300 ${
+      <nav className={`fixed top-0 w-full z-[50] border-b border-[var(--border-color)] transition-all duration-300 ${
         isPopupOpen 
           ? 'bg-black/80 backdrop-blur-sm' 
           : 'bg-[var(--dark-bg)]/80 backdrop-blur-lg'

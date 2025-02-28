@@ -165,10 +165,15 @@ nav {
   transition: backdrop-filter 0.3s ease, 
               background-color 0.3s ease, 
               border-color 0.3s ease;
-  z-index: 50;
+  z-index: 50 !important;
 }
 
 /* Ensure popups are above the navbar */
 .fixed.z-50 {
-  z-index: 100;
+  z-index: 100 !important;
+}
+
+/* Add this new style to ensure popup container has proper placement */
+.fixed.inset-0.z-50.flex {
+  padding-top: 4rem !important;
 }
