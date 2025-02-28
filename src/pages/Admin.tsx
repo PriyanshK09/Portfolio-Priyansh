@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { Lock, MessageSquare, Users } from 'lucide-react';
+import { Lock, MessageSquare, Users, MapPin } from 'lucide-react';
+import GeoLocationPopup from '../components/GeoLocationPopup';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -30,6 +31,8 @@ const Admin = () => {
   const [visitors, setVisitors] = useState<VisitorData[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIp, setSelectedIp] = useState<string | null>(null);
+  const [isGeoPopupOpen, setIsGeoPopupOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -43,7 +46,7 @@ const Admin = () => {
   const fetchData = async (token: string) => {
     try {
       setLoading(true);
-      setError(null);
+      setError('');
 
       const config = {
         headers: { 
@@ -79,7 +82,7 @@ const Admin = () => {
     
     try {
       setLoading(true);
-      setError(null);
+      setError('');
       const response = await axios.post(`${apiUrl}/api/admin/login`, { password });
       localStorage.setItem('adminToken', response.data.token);
       await fetchData(response.data.token);
@@ -89,6 +92,11 @@ const Admin = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleIpClick = (ip: string) => {
+    setSelectedIp(ip);
+    setIsGeoPopupOpen(true);
   };
 
   if (loading) {
@@ -253,7 +261,15 @@ const Admin = () => {
                           {visitor.section}
                         </span>
                       </td>
-                      <td className="py-4 pr-6 font-mono text-sm">{visitor.ip}</td>
+                      <td className="py-4 pr-6 font-mono text-sm">
+                        <button
+                          onClick={() => handleIpClick(visitor.ip)}
+                          className="flex items-center gap-2 hover:text-[var(--primary)] transition-colors group"
+                        >
+                          {visitor.ip}
+                          <MapPin size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </button>
+                      </td>
                       <td className="py-4 pr-6">
                         <div className="text-sm">
                           <span className="text-gray-400">{visitor.browser}</span>
@@ -269,6 +285,13 @@ const Admin = () => {
               </table>
             </div>
           </div>
+          
+          {/* Add GeoLocation Popup */}
+          <GeoLocationPopup
+            ip={selectedIp || ''}
+            isOpen={isGeoPopupOpen}
+            onClose={() => setIsGeoPopupOpen(false)}
+          />
         </motion.div>
       </div>
     </div>
