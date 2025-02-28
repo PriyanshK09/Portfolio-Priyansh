@@ -61,13 +61,22 @@ const GeoLocationPopup = ({ ip, isOpen, onClose }: GeoLocationPopupProps) => {
 
   useEffect(() => {
     if (isOpen) {
+      // Add classes immediately when popup opens
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('popup-open');
+      
+      // Force a reflow to ensure the class is applied immediately
+      void document.body.offsetHeight;
     } else {
-      document.body.style.overflow = 'unset';
+      // Remove classes when popup closes
+      document.body.style.overflow = '';
+      document.body.classList.remove('popup-open');
     }
 
+    // Cleanup function - ensure classes are removed if component unmounts
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
+      document.body.classList.remove('popup-open');
     };
   }, [isOpen]);
 

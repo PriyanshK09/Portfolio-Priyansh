@@ -23,6 +23,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,8 +31,8 @@ const Navbar = () => {
       const scrollPosition = window.scrollY + 100; // Offset for better detection
 
       sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
+        const sectionTop = (section as HTMLElement).offsetTop;
+        const sectionHeight = (section as HTMLElement).offsetHeight;
 
         if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
           setActiveSection(section.id);
@@ -43,9 +44,43 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    // Check if any popup is open by directly accessing the body class
+    const checkPopupState = () => {
+      const hasPopupOpen = document.body.classList.contains('popup-open');
+      setIsPopupOpen(hasPopupOpen);
+    };
+
+    // Initial check
+    checkPopupState();
+
+    // Set up a more robust observer
+    const observer = new MutationObserver(() => {
+      checkPopupState();
+    });
+
+    // Observe the body element for class changes
+    observer.observe(document.body, { 
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    // Also check when window gets focus (in case the modal was opened/closed)
+    window.addEventListener('focus', checkPopupState);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('focus', checkPopupState);
+    };
+  }, []);
+
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 bg-[var(--dark-bg)]/80 backdrop-blur-lg border-b border-[var(--border-color)]">
+      <nav className={`fixed top-0 w-full z-50 border-b border-[var(--border-color)] transition-all duration-300 ${
+        isPopupOpen 
+          ? 'bg-black/80 backdrop-blur-sm' 
+          : 'bg-[var(--dark-bg)]/80 backdrop-blur-lg'
+      }`}>
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Left: Logo and Title */}
