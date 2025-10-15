@@ -5,6 +5,7 @@ import Projects from '../components/Projects';
 import Experience from '../components/Experience';
 import Contact from '../components/Contact';
 import Skills from '../components/Skills';
+import Education from '../components/Education';
 import { PortfolioData } from '../types';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -46,8 +47,9 @@ const Home = () => {
       <main>
         <Hero />
         <Skills />
-        <Projects />
-        <Experience />
+    <Projects />
+    <Experience />
+    <Education />
         <Contact />
       </main>
     );
@@ -70,6 +72,7 @@ const Home = () => {
             experiences={portfolioData.experiences}
             certificates={portfolioData.certificates}
           />
+          <Education />
           <Contact />
         </>
       )}

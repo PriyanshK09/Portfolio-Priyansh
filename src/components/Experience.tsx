@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Briefcase, Award } from 'lucide-react';
+import { Briefcase, Award, Calendar, Building2, ExternalLink, Star } from 'lucide-react';
 import { experiences as staticExperiences, certificates as staticCertificates } from '../data';
 import { Experience as ExperienceType, Certificate } from '../types';
 
@@ -41,8 +41,8 @@ const Experience: React.FC<ExperienceProps> = ({
               Journey
             </span>
           </div>
-          <h2 className="section-title">Experience & <span className="name-gradient">Education</span></h2>
-          <p className="section-subtitle">My professional journey</p>
+          <h2 className="section-title">Professional <span className="name-gradient">Experience</span></h2>
+          <p className="section-subtitle">Work experience and certifications</p>
         </motion.div>
 
         <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -53,18 +53,51 @@ const Experience: React.FC<ExperienceProps> = ({
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            <h3 className="text-2xl font-bold mb-8">Work Experience</h3>
+            <div className="mb-3 flex justify-start">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-[11px] tracking-wide uppercase text-white/70">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
+                Work Experience
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-6">Work Experience</h3>
             
             {experiences.map((exp, index) => (
-              <div key={index} className="glass-card p-6 relative border-white/10 hover:border-[var(--primary)]/30 transition-colors">
-                <div className="absolute -left-3 top-6 w-6 h-6 bg-[var(--primary)] rounded-full flex items-center justify-center">
+              <motion.div
+                key={index}
+                className="glass-card p-6 relative overflow-hidden group border-white/10 hover:border-[var(--primary)]/30 transition-colors rounded-2xl"
+                whileHover={{ y: -6, boxShadow: '0 22px 60px rgba(0,0,0,0.45), 0 0 40px rgba(16,185,129,0.25)' }}
+                whileTap={{ y: -2, boxShadow: '0 14px 32px rgba(0,0,0,0.35), 0 0 22px rgba(16,185,129,0.18)' }}
+                transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.6 }}
+              >
+                {/* full-card subtle glow outline on hover */}
+                <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent group-hover:border-[var(--primary)]/60 group-hover:shadow-[0_0_64px_rgba(16,185,129,0.35)] transition-[box-shadow,border-color]" />
+                {/* inner radial glow */}
+                <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.16),transparent_60%)]" />
+
+                {/* Featured Internship ribbon for Tata */}
+                {exp.company?.toLowerCase().includes('tata technologies') && (
+                  <div className="absolute right-4 top-4 z-10">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-[var(--primary)]/15 border border-[var(--primary)]/40 text-[var(--primary)] shadow-[0_0_18px_rgba(16,185,129,0.3)] backdrop-blur-sm">
+                      <Star size={12} className="text-[var(--primary)]" />
+                      Internship
+                    </span>
+                  </div>
+                )}
+
+                {/* timeline node */}
+                <div className="absolute -left-3 top-6 w-6 h-6 rounded-full bg-[var(--primary)]/90 ring-2 ring-white/15 shadow-[0_0_14px_rgba(16,185,129,0.35)] flex items-center justify-center">
                   <Briefcase size={14} className="text-[var(--dark-bg)]" />
                 </div>
 
                 <div className="space-y-2">
-                  <span className="text-sm text-[var(--text-secondary)]">{exp.duration}</span>
-                  <h4 className="text-xl font-bold">{exp.position}</h4>
-                  <p className="text-[var(--text-secondary)]">{exp.company}</p>
+                  <span className="inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[var(--text-secondary)]">
+                    <Calendar size={12} />
+                    {exp.duration}
+                  </span>
+                  <h4 className="text-xl font-bold tracking-tight">{exp.position}</h4>
+                  <p className="text-[var(--text-secondary)] inline-flex items-center gap-1.5">
+                    <Building2 size={14} className="text-white/50" /> {exp.company}
+                  </p>
                   
                   <ul className="list-disc list-inside space-y-2 text-[var(--text-secondary)]">
                     {exp.description.map((desc, i) => (
@@ -74,13 +107,13 @@ const Experience: React.FC<ExperienceProps> = ({
 
                   <div className="flex flex-wrap gap-2 pt-4">
                     {exp.techStack.map((tech) => (
-                      <span key={tech} className="skill-tag">
+                      <span key={tech} className="skill-tag hover:text-[var(--text-primary)]/90 border-white/10 hover:border-[var(--primary)]/35">
                         {tech}
                       </span>
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
             
             {experiences.length === 0 && (
@@ -97,25 +130,49 @@ const Experience: React.FC<ExperienceProps> = ({
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            <h3 className="text-2xl font-bold mb-8">Certifications</h3>
+            <div className="mb-3 flex justify-start">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-[11px] tracking-wide uppercase text-white/70">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
+                Certifications
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-6">Certifications</h3>
             
             {certificates.map((cert, index) => (
-              <a
+              <motion.a
                 key={index}
                 href={cert.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass-card p-6 block border-white/10 hover:border-[var(--primary)]/30 transition-colors"
+                className="glass-card p-6 relative overflow-hidden group block border-white/10 hover:border-[var(--primary)]/30 transition-colors rounded-2xl"
+                whileHover={{ y: -6, boxShadow: '0 22px 60px rgba(0,0,0,0.45), 0 0 40px rgba(16,185,129,0.25)' }}
+                whileTap={{ y: -2, boxShadow: '0 14px 32px rgba(0,0,0,0.35), 0 0 22px rgba(16,185,129,0.18)' }}
+                transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.6 }}
               >
+                {/* full-card subtle glow outline on hover */}
+                <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent group-hover:border-[var(--primary)]/60 group-hover:shadow-[0_0_64px_rgba(16,185,129,0.35)] transition-[box-shadow,border-color]" />
+                {/* inner radial glow */}
+                <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.16),transparent_60%)]" />
+                {/* top-right link icon */}
+                <div className="absolute right-4 top-4 opacity-60 group-hover:opacity-90 transition-opacity">
+                  <span className="inline-flex items-center justify-center h-7 w-7 rounded-lg bg-white/5 border border-white/10">
+                    <ExternalLink size={14} />
+                  </span>
+                </div>
                 <div className="flex items-start gap-4">
-                  <Award className="text-[var(--primary)]" size={24} />
+                  <div className="p-2 rounded-md bg-[var(--primary)]/10 border border-[var(--primary)]/20">
+                    <Award className="text-[var(--primary)]" size={20} />
+                  </div>
                   <div className="space-y-1">
                     <h4 className="font-bold">{cert.title}</h4>
                     <p className="text-[var(--text-secondary)]">{cert.issuer}</p>
-                    <span className="text-sm text-[var(--text-secondary)]">{cert.date}</span>
+                    <span className="inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[var(--text-secondary)]">
+                      <Calendar size={12} />
+                      {cert.date}
+                    </span>
                   </div>
                 </div>
-              </a>
+              </motion.a>
             ))}
             
             {certificates.length === 0 && (

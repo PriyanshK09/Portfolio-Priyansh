@@ -33,20 +33,30 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 relative px-4">
-      <div className="max-w-4xl mx-auto">
+    <section id="contact" className="relative py-24 px-4">
+      {/* top hairline */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,rgba(16,185,129,0.6),rgba(34,211,238,0.35),rgba(99,102,241,0.35),rgba(107,59,255,0.3))]" />
+      {/* background layers */}
+      <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl h-72 rounded-[50%] blur-3xl opacity-[0.18] bg-[radial-gradient(closest-side,rgba(16,185,129,0.6),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.05] grid-pattern [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
+      <div className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[1100px] rounded-full border border-white/[0.06]" />
+      <div className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 w-[780px] h-[780px] rounded-full border border-white/[0.05]" />
+      <div className="max-w-4xl mx-auto relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="text-sm font-medium text-[var(--primary)] mb-2 block">
-            Contact
-          </span>
-            <h2 className="section-title">Let's Connect!</h2>
+          <div className="mb-4 flex justify-center">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-[11px] tracking-wide uppercase text-white/70">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
+              Contact
+            </span>
+          </div>
+          <h2 className="section-title">Let’s <span className="name-gradient">Connect</span>!</h2>
           <p className="section-subtitle">
-            Got a project in mind? Let's discuss how we can bring your ideas to life.
+            Got a project in mind? Let’s discuss how we can bring your ideas to life.
           </p>
         </motion.div>
 
@@ -55,7 +65,7 @@ const Contact = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="contact-card p-8 md:p-10"
+          className="contact-card p-8 md:p-10 border-white/10"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -139,11 +149,7 @@ const Contact = () => {
         </motion.div>
       </div>
 
-      {/* Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full -z-10 opacity-50">
-        <div className="absolute top-10 left-10 w-72 h-72 bg-[var(--primary)] rounded-full filter blur-[120px]" />
-        <div className="absolute bottom-10 right-10 w-72 h-72 bg-[var(--secondary)] rounded-full filter blur-[120px]" />
-      </div>
+      {/* Background Elements retained via section layers above */}
     </section>
   );
 };

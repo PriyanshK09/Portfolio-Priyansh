@@ -33,8 +33,20 @@ export const projects: Project[] = [
 
 export const experiences: Experience[] = [
   {
+    company: 'Tata Technologies (at Tata Motors Limited — On-site)',
+    position: 'Full Stack Development Intern',
+    duration: 'May 2025 - July 2025',
+    description: [
+      'Redesigned and developed the management portal, significantly improving usability and operational efficiency.',
+      'Modernized UI/UX and optimized workflows for streamlined operations.',
+      'Enhanced UI and backend logic, reducing page load times by 25%.',
+      'Collaborated with cross-functional teams to deliver scalable  features.'
+    ],
+    techStack: ['Python', 'HTML', 'JavaScript', 'SQL', 'CSS']
+  },
+  {
     company: 'Cipher Schools',
-    position: 'Trainee – Full Stack Developer',
+    position: 'Summer Training - Full Stack Developer',
     duration: 'June 2024 - July 2024',
     description: [
       'Completed intensive Full Stack Development training program',
