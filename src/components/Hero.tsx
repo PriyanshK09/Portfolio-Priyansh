@@ -86,14 +86,17 @@ const Hero: React.FC<HeroProps> = ({ userInfo }) => {
   const nameFirst = userInfo?.name?.first || 'Priyansh';
   const nameLast = userInfo?.name?.last || 'Khare';
 
-  const skills = normalizeStringArray((userInfo as any)?.skills, [
+  // Display skills (explicit order as requested)
+  const displaySkills = [
     'React',
     'TypeScript',
     'Node.js',
     'Express',
     'MongoDB',
+    'JavaScript',
     'Tailwind',
-  ]);
+    'C++',
+  ];
 
   // Parallax motion values for background elements
   const mouseX = useMotionValue(0);
@@ -336,7 +339,7 @@ const Hero: React.FC<HeroProps> = ({ userInfo }) => {
 
             {/* Skill tags */}
             <motion.div variants={item} className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 max-w-3xl">
-              {skills.slice(0, 8).map((s: string) => (
+              {displaySkills.map((s: string) => (
                 <span key={s} className="skill-tag">{s}</span>
               ))}
             </motion.div>
