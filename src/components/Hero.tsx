@@ -24,22 +24,76 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
 };
 
+// Normalize various input shapes into a clean, flat string array
+const normalizeStringArray = (value: any, fallback: string[]): string[] => {
+  try {
+    const SEP = /[|,;\\/·•]+/; // common delimiters
+    const out: string[] = [];
+
+    const pushTokens = (s: any) => {
+      if (s == null) return;
+      let str = typeof s === 'string' ? s : s?.name ?? (typeof s === 'number' ? String(s) : '');
+      if (typeof str !== 'string') return;
+      str
+        .split(SEP)
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .forEach((t) => out.push(t));
+    };
+
+    const walk = (v: any) => {
+      if (Array.isArray(v)) {
+        v.forEach((item) => walk(item));
+      } else if (v && typeof v === 'object') {
+        const vals = Object.values(v as Record<string, any>);
+        if (vals.length) vals.forEach((it) => walk(it));
+        else pushTokens(v);
+      } else if (typeof v === 'string') {
+        pushTokens(v);
+      } else if (typeof v === 'number') {
+        pushTokens(String(v));
+      }
+    };
+
+    walk(value);
+
+    // de-duplicate while preserving order
+    const seen = new Set<string>();
+    const deduped = out.filter((t) => {
+      if (seen.has(t)) return false;
+      seen.add(t);
+      return true;
+    });
+
+    return deduped.length ? deduped : fallback;
+  } catch (_) {
+    return fallback;
+  }
+};
+
 const Hero: React.FC<HeroProps> = ({ userInfo }) => {
   // i18n hook reserved for future localized content (unused for now)
   useTranslation();
 
   const links = userInfo?.socialLinks || socialLinks;
-  const typewriterStrings = userInfo?.typewriterStrings || [
+  const typewriterStrings = normalizeStringArray(userInfo?.typewriterStrings, [
     'MERN Stack Developer',
     'Full‑Stack Engineer',
     'Open Source Contributor',
-    'Problem Solver'
-  ];
+    'Problem Solver',
+  ]);
 
   const nameFirst = userInfo?.name?.first || 'Priyansh';
   const nameLast = userInfo?.name?.last || 'Khare';
 
-  const skills = (userInfo as any)?.skills || ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'Tailwind'];
+  const skills = normalizeStringArray((userInfo as any)?.skills, [
+    'React',
+    'TypeScript',
+    'Node.js',
+    'Express',
+    'MongoDB',
+    'Tailwind',
+  ]);
 
   // Parallax motion values for background elements
   const mouseX = useMotionValue(0);
