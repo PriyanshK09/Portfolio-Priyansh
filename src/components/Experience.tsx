@@ -2,9 +2,18 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Briefcase, Award } from 'lucide-react';
-import { experiences, certificates } from '../data';
+import { experiences as staticExperiences, certificates as staticCertificates } from '../data';
+import { Experience as ExperienceType, Certificate } from '../types';
 
-const Experience = () => {
+interface ExperienceProps {
+  experiences?: ExperienceType[];
+  certificates?: Certificate[];
+}
+
+const Experience: React.FC<ExperienceProps> = ({
+  experiences = staticExperiences,
+  certificates = staticCertificates
+}) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -60,6 +69,12 @@ const Experience = () => {
                 </div>
               </div>
             ))}
+            
+            {experiences.length === 0 && (
+              <div className="glass-card p-6 text-center">
+                <p className="text-[var(--text-secondary)]">No experience data available</p>
+              </div>
+            )}
           </motion.div>
 
           {/* Certifications */}
@@ -89,6 +104,12 @@ const Experience = () => {
                 </div>
               </a>
             ))}
+            
+            {certificates.length === 0 && (
+              <div className="glass-card p-6 text-center">
+                <p className="text-[var(--text-secondary)]">No certification data available</p>
+              </div>
+            )}
           </motion.div>
         </div>
       </div>

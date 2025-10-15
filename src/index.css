@@ -177,3 +177,18 @@ nav {
 .fixed.inset-0.z-50.flex {
   padding-top: 4rem !important;
 }
+
+/* Admin Form Styles */
+.form-input {
+  @apply w-full px-4 py-2 rounded-lg bg-[var(--dark-bg)] border border-[var(--border-color)] focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] outline-none;
+}
+
+.glass-card {
+  @apply bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)];
+}
+
+.skill-tag {
+  @apply bg-opacity-10 text-xs px-3 py-1 rounded-full;
+  background-color: rgba(0, 229, 160, 0.1);
+  color: var(--primary);
+}

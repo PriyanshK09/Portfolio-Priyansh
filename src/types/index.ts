@@ -38,3 +38,32 @@ export interface ContactForm {
   email: string;
   message: string;
 }
+
+// New types for portfolio editing
+export interface UserInfo {
+  name: {
+    first: string;
+    last: string;
+  };
+  title: string;
+  about: string;
+  socialLinks: {
+    github: string;
+    linkedin: string;
+    email: string;
+  };
+  skills: {
+    languages: string[];
+    frameworks: string[];
+    tools: string[];
+    other: string[];
+  };
+  typewriterStrings: string[];
+}
+
+export interface PortfolioData {
+  userInfo: UserInfo;
+  projects: Project[];
+  experiences: Experience[];
+  certificates: Certificate[];
+}

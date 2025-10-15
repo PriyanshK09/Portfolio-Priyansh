@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { contactRouter } from './routes/contact.js';
 import { adminRouter } from './routes/admin.js';
+import { portfolioRouter } from './routes/portfolio.js'; // Add this import
 import { visitorMiddleware } from './middleware/visitor.js';
 import { healthRouter } from './routes/health.js';
 
@@ -23,7 +24,7 @@ app.use(cors({
     ? 'https://priyanshk.netlify.app'  // Your Netlify URL
     : 'http://localhost:3000',
   credentials: true,
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -85,6 +86,7 @@ app.use('/health', healthRouter);
 // Routes
 app.use('/api/contact', contactRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/portfolio', portfolioRouter); // Add portfolio routes
 
 // Error handling middleware
 app.use((err, req, res, next) => {

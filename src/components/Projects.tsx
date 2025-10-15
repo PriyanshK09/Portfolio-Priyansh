@@ -2,9 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ExternalLink, Github } from 'lucide-react';
-import { projects } from '../data';
+import { projects as staticProjects } from '../data';
+import { Project } from '../types';
 
-const Projects = () => {
+interface ProjectsProps {
+  projects?: Project[];
+}
+
+const Projects: React.FC<ProjectsProps> = ({ projects = staticProjects }) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -36,9 +41,12 @@ const Projects = () => {
             >
               <div className="relative h-48">
                 <img
-                  src={project.image}
+                  src={project.image || 'https://via.placeholder.com/800x400?text=Project+Image'}
                   alt={project.title}
                   className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x400?text=Project+Image';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--dark-bg)] via-transparent to-transparent" />
               </div>
