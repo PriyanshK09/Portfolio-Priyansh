@@ -55,7 +55,7 @@ const normalizeStringArray = (
   }
 };
 
-const Skills: React.FC<SkillsProps> = ({ skills: skillsProp }) => {
+const Skills: React.FC<SkillsProps> = ({ skills: _skillsProp }) => {
   const ref = useRef(null);
   const sectionRef = useRef<HTMLElement | null>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
@@ -99,27 +99,35 @@ const Skills: React.FC<SkillsProps> = ({ skills: skillsProp }) => {
     ],
   };
 
-  // Defensive normalization to avoid runtime issues in production
+  // Use only fallback skills (ignore backend/props) while keeping ordering and normalization
   const skills = useMemo(
     () => ({
       languages: (() => {
         const required = ["HTML", "CSS"];
         const base = normalizeStringArray(
-          skillsProp?.languages,
+          fallbackSkills.languages,
           fallbackSkills.languages
         );
-        // Ensure HTML/CSS appear first and only once
         return Array.from(new Set([...required, ...base]));
       })(),
       frameworks: normalizeStringArray(
-        skillsProp?.frameworks,
+        fallbackSkills.frameworks,
         fallbackSkills.frameworks
       ),
-      tools: normalizeStringArray(skillsProp?.tools, fallbackSkills.tools),
-      other: normalizeStringArray(skillsProp?.other, fallbackSkills.other),
-      cloud: normalizeStringArray((skillsProp as any)?.cloud, fallbackSkills.cloud),
+      tools: normalizeStringArray(
+        fallbackSkills.tools,
+        fallbackSkills.tools
+      ),
+      other: normalizeStringArray(
+        fallbackSkills.other,
+        fallbackSkills.other
+      ),
+      cloud: normalizeStringArray(
+        (fallbackSkills as any)?.cloud,
+        fallbackSkills.cloud
+      ),
     }),
-    [skillsProp]
+    []
   );
 
   // Motion variants for staged reveals
