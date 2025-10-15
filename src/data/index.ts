@@ -2,6 +2,16 @@ import { Project, Experience, Certificate } from '../types';
 
 export const projects: Project[] = [
   {
+    id: 'codinganna',
+    title: 'CodingAnna – EdTech Learning Platform',
+    description: 'A modern EdTech platform delivering interactive coding lessons, assessments, and progress tracking. Built for performance and accessibility with a delightful, student‑first UX.',
+    techStack: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'TailwindCSS', 'JWT Auth'],
+    githubUrl: 'private',
+    demoUrl: 'https://codinganna.com/',
+    image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80',
+    privateRepo: true
+  },
+  {
     id: 'fintrack',
     title: 'FinTrack – Smart Finance Management App',
     description: 'A full-stack finance tracker helping users analyze spending patterns and achieve financial control.',
@@ -18,15 +28,6 @@ export const projects: Project[] = [
     githubUrl: 'https://github.com/PixelPiratess/SIH-PixelPirates-Medicare',
     demoUrl: 'https://medicare-pixelpirates.vercel.app/',
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80'
-  },
-  {
-    id: 'notesme',
-    title: 'Notes Me',
-    description: 'React-Based note taking web app with optimized UI/UX.',
-    techStack: ['React.js', 'Node.js', 'MongoDB', 'JWT Auth'],
-    githubUrl: 'https://github.com/PriyanshK09/NotesApp',
-    demoUrl: 'https://notesme-priyanshk09.vercel.app/',
-    image: 'https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&q=80'
   }
 ];
 

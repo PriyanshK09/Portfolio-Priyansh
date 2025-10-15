@@ -6,6 +6,8 @@ export interface Project {
   githubUrl: string;
   demoUrl?: string;
   image?: string;
+  // Optional: mark repository as private (e.g., NDA). UI will hide/disable Code buttons accordingly.
+  privateRepo?: boolean;
 }
 
 export interface Experience {
