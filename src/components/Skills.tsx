@@ -59,6 +59,14 @@ const Skills: React.FC<SkillsProps> = ({ skills: _skillsProp }) => {
   const ref = useRef(null);
   const sectionRef = useRef<HTMLElement | null>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener?.('change', update);
+    return () => mq.removeEventListener?.('change', update);
+  }, []);
   
   // Scroll-based parallax for subtle background beams
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
@@ -181,17 +189,21 @@ const Skills: React.FC<SkillsProps> = ({ skills: _skillsProp }) => {
     <section ref={sectionRef} id="skills" className="relative py-24 px-6">
       {/* Subtle gradient hairline and background glows to match Hero */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,rgba(16,185,129,0.6),rgba(34,211,238,0.35),rgba(99,102,241,0.35),rgba(107,59,255,0.3))]" />
-      <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl h-72 rounded-[50%] blur-3xl opacity-[0.18] bg-[radial-gradient(closest-side,rgba(16,185,129,0.6),transparent)]" />
-      <div className="pointer-events-none absolute -bottom-10 right-1/3 w-80 h-80 rounded-full blur-3xl opacity-[0.12] bg-[radial-gradient(circle,rgba(99,102,241,0.65),transparent)]" />
+  <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl h-72 rounded-[50%] blur-3xl opacity-[0.18] bg-[radial-gradient(closest-side,rgba(16,185,129,0.6),transparent)] hidden md:block" />
+  <div className="pointer-events-none absolute -bottom-10 right-1/3 w-80 h-80 rounded-full blur-3xl opacity-[0.12] bg-[radial-gradient(circle,rgba(99,102,241,0.65),transparent)] hidden md:block" />
       {/* New: faint grid and rings to avoid blank space and align with hero visuals */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.06] grid-pattern [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
-      <div className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[1100px] rounded-full border border-white/[0.06]" />
-      <div className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 w-[780px] h-[780px] rounded-full border border-white/[0.05]" />
-      <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 w-[85%] max-w-5xl h-48 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.12),transparent_60%)] blur-2xl opacity-90" />
+  <div className="pointer-events-none absolute inset-0 opacity-[0.06] grid-pattern [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)] hidden md:block" />
+  <div className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[1100px] rounded-full border border-white/[0.06] hidden md:block" />
+  <div className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 w-[780px] h-[780px] rounded-full border border-white/[0.05] hidden md:block" />
+  <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 w-[85%] max-w-5xl h-48 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.12),transparent_60%)] blur-2xl opacity-90 hidden md:block" />
 
       {/* Parallax shimmer beams (behind content) */}
-      <motion.div aria-hidden className="pointer-events-none absolute left-[5%] right-[5%] top-24 h-36 rounded-full blur-3xl opacity-[0.15] mix-blend-screen" style={{ x: beamX, y: beamY, background: "linear-gradient(90deg, rgba(16,185,129,0.25), rgba(34,211,238,0.18), rgba(99,102,241,0.2))" }} />
-      <motion.div aria-hidden className="pointer-events-none absolute left-[15%] right-[15%] bottom-20 h-28 rounded-full blur-3xl opacity-[0.12] mix-blend-screen" style={{ x: beam2X, y: beam2Y, background: "linear-gradient(90deg, rgba(107,59,255,0.2), rgba(16,185,129,0.22), rgba(99,102,241,0.18))" }} />
+      {!isMobile && (
+        <>
+          <motion.div aria-hidden className="pointer-events-none absolute left-[5%] right-[5%] top-24 h-36 rounded-full blur-3xl opacity-[0.15] mix-blend-screen will-change-transform" style={{ x: beamX, y: beamY, background: "linear-gradient(90deg, rgba(16,185,129,0.25), rgba(34,211,238,0.18), rgba(99,102,241,0.2))" }} />
+          <motion.div aria-hidden className="pointer-events-none absolute left-[15%] right-[15%] bottom-20 h-28 rounded-full blur-3xl opacity-[0.12] mix-blend-screen will-change-transform" style={{ x: beam2X, y: beam2Y, background: "linear-gradient(90deg, rgba(107,59,255,0.2), rgba(16,185,129,0.22), rgba(99,102,241,0.18))" }} />
+        </>
+      )}
 
       {/* Floating themed icons to fill negative space */}
       <div aria-hidden className="pointer-events-none absolute inset-0 hidden md:block">
@@ -249,7 +261,7 @@ const Skills: React.FC<SkillsProps> = ({ skills: _skillsProp }) => {
               key={category.title}
               variants={card}
               whileHover={{ y: -4, boxShadow: "0 10px 30px rgba(0,0,0,0.25)" }}
-              className="glass-card p-6 relative overflow-hidden group border-white/10 hover:border-[var(--primary)]/30 transition-colors"
+              className="glass-card p-6 relative overflow-hidden group border-white/10 hover:border-[var(--primary)]/30 transition-colors will-change-transform"
               role="listitem"
               aria-label={`${category.title} skills`}
             >

@@ -124,10 +124,14 @@ const Hero: React.FC<HeroProps> = ({ userInfo }) => {
 
   // Enable parallax only on larger screens and when reduced motion is not preferred
   const [enableParallax, setEnableParallax] = React.useState(true);
+  const [isMobile, setIsMobile] = React.useState(false);
   React.useEffect(() => {
     const mqWidth = window.matchMedia('(min-width: 768px)');
     const mqMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setEnableParallax(mqWidth.matches && !mqMotion.matches);
+    const update = () => {
+      setEnableParallax(mqWidth.matches && !mqMotion.matches);
+      setIsMobile(!mqWidth.matches);
+    };
     update();
     mqWidth.addEventListener?.('change', update);
     mqMotion.addEventListener?.('change', update);
@@ -175,7 +179,7 @@ const Hero: React.FC<HeroProps> = ({ userInfo }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 0.8, y: 0 }}
           transition={{ duration: 1.2 }}
-          className="absolute -top-24 -left-24 h-72 w-72 rounded-full blur-3xl"
+          className="absolute -top-24 -left-24 h-72 w-72 rounded-full blur-3xl hidden md:block"
           style={{
             x: enableParallax ? xSlow : 0,
             y: enableParallax ? ySlow : 0,
@@ -186,7 +190,7 @@ const Hero: React.FC<HeroProps> = ({ userInfo }) => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 0.6, y: 0 }}
           transition={{ duration: 1.2, delay: 0.2 }}
-          className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full blur-3xl"
+          className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full blur-3xl hidden md:block"
           style={{
             x: enableParallax ? xMed : 0,
             y: enableParallax ? yMed : 0,
@@ -198,14 +202,14 @@ const Hero: React.FC<HeroProps> = ({ userInfo }) => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 0.5, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.25 }}
-          className="absolute top-1/3 right-1/4 h-56 w-56 rounded-full blur-2xl"
+          className="absolute top-1/3 right-1/4 h-56 w-56 rounded-full blur-2xl hidden md:block"
           style={{ x: enableParallax ? xFast : 0, y: enableParallax ? yFast : 0, background: 'radial-gradient(circle, rgba(34,211,238,0.25), transparent 60%)' }}
         />
         {/* Subtle grid */}
-        <div className="absolute inset-0 grid-pattern opacity-[0.05]" />
+        <div className="absolute inset-0 grid-pattern opacity-[0.05] hidden md:block" />
         {/* Center spotlight behind heading */}
         <div
-          className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[90px] w-[520px] h-[320px] md:w-[600px] md:h-[380px] xl:w-[820px] xl:h-[520px] 2xl:w-[1000px] 2xl:h-[600px]"
+          className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[90px] w-[520px] h-[320px] md:w-[600px] md:h-[380px] xl:w-[820px] xl:h-[520px] 2xl:w-[1000px] 2xl:h-[600px] hidden md:block"
           style={{ background: 'radial-gradient(ellipse at center, rgba(16,185,129,0.12), transparent 65%)' }}
         />
         {/* Decorative beams */}
@@ -230,14 +234,14 @@ const Hero: React.FC<HeroProps> = ({ userInfo }) => {
         {/* Ring outlines */}
         <motion.div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5"
-          style={{ width: 420, height: 420, x: enableParallax ? xSlow : 0, y: enableParallax ? ySlow : 0 }}
+          style={{ width: 420, height: 420, x: enableParallax ? xSlow : 0, y: enableParallax ? ySlow : 0, display: isMobile ? 'none' : undefined }}
         />
         <motion.div
           className="absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.04]"
-          style={{ width: 620, height: 620, x: enableParallax ? xMed : 0, y: enableParallax ? yMed : 0 }}
+          style={{ width: 620, height: 620, x: enableParallax ? xMed : 0, y: enableParallax ? yMed : 0, display: isMobile ? 'none' : undefined }}
         />
         {/* Floating particles */}
-        {particles.map((p, idx) => (
+        {!isMobile && particles.map((p, idx) => (
           <motion.span
             key={idx}
             className="absolute rounded-full"

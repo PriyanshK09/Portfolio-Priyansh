@@ -52,7 +52,7 @@ const Projects: React.FC<ProjectsProps> = ({ projects = staticProjects }) => {
               transition={{ duration: 0.6, delay: index * 0.15 }}
               whileHover={{ y: -6, scale: 1.005, boxShadow: '0 20px 60px rgba(0,0,0,0.35)' }}
               whileTap={{ scale: 0.997 }}
-              className="glass-card overflow-hidden group flex flex-col h-full border-white/10 hover:border-[var(--primary)]/30 transition-colors relative"
+              className="glass-card overflow-hidden group flex flex-col h-full border-white/10 hover:border-[var(--primary)]/30 transition-colors relative will-change-transform md:hover:translate-y-[-6px]"
               role="article" aria-label={project.title}
             >
               {/* Tag ribbon on hover */}
@@ -72,7 +72,7 @@ const Projects: React.FC<ProjectsProps> = ({ projects = staticProjects }) => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--dark-bg)] via-transparent to-transparent" />
                 {/* shine sweep */}
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[1200ms] ease-out bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.12),transparent)]" />
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[1200ms] ease-out bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.12),transparent)] hidden md:block" />
 
                 {/* image overlay actions */}
                 <div className="pointer-events-none absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

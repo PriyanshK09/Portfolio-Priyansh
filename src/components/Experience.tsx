@@ -24,10 +24,10 @@ const Experience: React.FC<ExperienceProps> = ({
       {/* top hairline */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,rgba(16,185,129,0.6),rgba(34,211,238,0.35),rgba(99,102,241,0.35),rgba(107,59,255,0.3))]" />
       {/* background glows + grid + rings */}
-      <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl h-72 rounded-[50%] blur-3xl opacity-[0.18] bg-[radial-gradient(closest-side,rgba(16,185,129,0.6),transparent)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.05] grid-pattern [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
-      <div className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[1100px] rounded-full border border-white/[0.06]" />
-      <div className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 w-[780px] h-[780px] rounded-full border border-white/[0.05]" />
+  <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl h-72 rounded-[50%] blur-3xl opacity-[0.18] bg-[radial-gradient(closest-side,rgba(16,185,129,0.6),transparent)] hidden md:block" />
+  <div className="pointer-events-none absolute inset-0 opacity-[0.05] grid-pattern [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)] hidden md:block" />
+  <div className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[1100px] rounded-full border border-white/[0.06] hidden md:block" />
+  <div className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 w-[780px] h-[780px] rounded-full border border-white/[0.05] hidden md:block" />
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -64,7 +64,7 @@ const Experience: React.FC<ExperienceProps> = ({
             {experiences.map((exp, index) => (
               <motion.div
                 key={index}
-                className="glass-card p-6 relative overflow-hidden group border-white/10 hover:border-[var(--primary)]/30 transition-colors rounded-2xl"
+                className="glass-card p-6 relative overflow-hidden group border-white/10 hover:border-[var(--primary)]/30 transition-colors rounded-2xl will-change-transform"
                 whileHover={{ y: -6, boxShadow: '0 22px 60px rgba(0,0,0,0.45), 0 0 40px rgba(16,185,129,0.25)' }}
                 whileTap={{ y: -2, boxShadow: '0 14px 32px rgba(0,0,0,0.35), 0 0 22px rgba(16,185,129,0.18)' }}
                 transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.6 }}
@@ -144,7 +144,7 @@ const Experience: React.FC<ExperienceProps> = ({
                 href={cert.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass-card p-6 relative overflow-hidden group block border-white/10 hover:border-[var(--primary)]/30 transition-colors rounded-2xl"
+                className="glass-card p-6 relative overflow-hidden group block border-white/10 hover:border-[var(--primary)]/30 transition-colors rounded-2xl will-change-transform"
                 whileHover={{ y: -6, boxShadow: '0 22px 60px rgba(0,0,0,0.45), 0 0 40px rgba(16,185,129,0.25)' }}
                 whileTap={{ y: -2, boxShadow: '0 14px 32px rgba(0,0,0,0.35), 0 0 22px rgba(16,185,129,0.18)' }}
                 transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.6 }}
