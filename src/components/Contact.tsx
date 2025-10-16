@@ -65,85 +65,101 @@ const Contact = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="contact-card p-8 md:p-10 border-white/10"
+          whileHover={{ y: -6, boxShadow: '0 22px 60px rgba(0,0,0,0.45), 0 0 40px rgba(16,185,129,0.25)' }}
+          whileTap={{ y: -2, boxShadow: '0 14px 32px rgba(0,0,0,0.35), 0 0 22px rgba(16,185,129,0.18)' }}
+          className="contact-card relative overflow-hidden group p-8 md:p-10 border-white/10 hover:border-[var(--primary)]/30 transition-colors will-change-transform"
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {/* full-card subtle glow outline on hover */}
+          <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent group-hover:border-[var(--primary)]/60 group-hover:shadow-[0_0_64px_rgba(16,185,129,0.35)] transition-[box-shadow,border-color]" />
+          {/* inner radial glow */}
+          <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.16),transparent_60%)]" />
+          <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="relative">
-                <label htmlFor="name" className="text-sm font-medium mb-2 block text-[var(--text-secondary)]">
+              {/* Name Field */}
+              <div className="space-y-2">
+                <label htmlFor="name" className="text-sm font-semibold text-white/90 flex items-center gap-2">
+                  <User size={16} className="text-[var(--primary)]" />
                   Name
                 </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="name"
-                    required
-                    className="form-input pl-10"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="John Doe"
-                  />
-                  <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-                </div>
+                <input
+                  type="text"
+                  id="name"
+                  required
+                  className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:bg-white/[0.07] focus:border-[var(--primary)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 transition-all duration-200"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Your name"
+                />
               </div>
-              <div className="relative">
-                <label htmlFor="email" className="text-sm font-medium mb-2 block text-[var(--text-secondary)]">
+
+              {/* Email Field */}
+              <div className="space-y-2">
+                <label htmlFor="email" className="text-sm font-semibold text-white/90 flex items-center gap-2">
+                  <Mail size={16} className="text-[var(--primary)]" />
                   Email
                 </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    id="email"
-                    required
-                    className="form-input pl-10"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="john@example.com"
-                  />
-                  <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-                </div>
+                <input
+                  type="email"
+                  id="email"
+                  required
+                  className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:bg-white/[0.07] focus:border-[var(--primary)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 transition-all duration-200"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="your@email.com"
+                />
               </div>
             </div>
-            <div className="relative">
-              <label htmlFor="message" className="text-sm font-medium mb-2 block text-[var(--text-secondary)]">
+
+            {/* Message Field */}
+            <div className="space-y-2">
+              <label htmlFor="message" className="text-sm font-semibold text-white/90 flex items-center gap-2">
+                <MessageSquare size={16} className="text-[var(--primary)]" />
                 Message
               </label>
-              <div className="relative">
-                <textarea
-                  id="message"
-                  required
-                  rows={6}
-                  className="form-input pl-10 resize-none"
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Tell me about your project..."
-                />
-                <MessageSquare size={18} className="absolute left-3 top-[1.7rem] text-[var(--text-secondary)]" />
-              </div>
+              <textarea
+                id="message"
+                required
+                rows={6}
+                className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 resize-none focus:bg-white/[0.07] focus:border-[var(--primary)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 transition-all duration-200"
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                placeholder="Tell me about your project..."
+              />
             </div>
-            <div className="flex justify-end mt-8">
-              <button
-                type="submit"
-                disabled={status === 'loading'}
-                className="contact-button"
-              >
-                {status === 'loading' ? (
-                  <>
-                    <div className="w-5 h-5 border-t-2 border-b-2 border-current rounded-full animate-spin" />
-                    Sending...
-                  </>
-                ) : status === 'success' ? (
-                  <>
-                    <CheckCircle size={20} />
-                    Message Sent!
-                  </>
-                ) : (
-                  <>
-                    <Send size={20} />
-                    Send Message
-                  </>
-                )}
-              </button>
+
+            {/* Submit Button */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+              {status === 'error' && (
+                <p className="text-sm text-red-400 flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                  Failed to send. Please try again.
+                </p>
+              )}
+              {status === 'success' && (
+                <p className="text-sm text-[var(--primary)] flex items-center gap-2">
+                  <CheckCircle size={16} />
+                  Message sent successfully!
+                </p>
+              )}
+              <div className={status === 'idle' ? 'ml-auto' : ''}>
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--primary)] text-[var(--dark-bg)] font-semibold rounded-xl hover:bg-[var(--primary)]/90 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]"
+                >
+                  {status === 'loading' ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      Send Message
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </form>
         </motion.div>

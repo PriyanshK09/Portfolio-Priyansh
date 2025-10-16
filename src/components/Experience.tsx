@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Briefcase, Award, Calendar, Building2, ExternalLink, Star } from 'lucide-react';
+import { Briefcase, Award, Calendar, Building2, ExternalLink, Star, Globe } from 'lucide-react';
 import { experiences as staticExperiences, certificates as staticCertificates } from '../data';
 import { Experience as ExperienceType, Certificate } from '../types';
 
@@ -180,6 +180,53 @@ const Experience: React.FC<ExperienceProps> = ({
                 <p className="text-[var(--text-secondary)]">No certification data available</p>
               </div>
             )}
+
+            {/* Agency / Freelance section */}
+            <div className="mt-8">
+              <div className="mb-3 flex justify-start">
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-[11px] tracking-wide uppercase text-white/70">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
+                  Agency
+                </span>
+              </div>
+              <h3 className="text-2xl font-bold mb-6">Zeploy — Web Development</h3>
+
+              <motion.a
+                href="https://zeploy.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass-card p-6 relative overflow-hidden group block border-white/10 hover:border-[var(--primary)]/30 transition-colors rounded-2xl will-change-transform"
+                whileHover={{ y: -6, boxShadow: '0 22px 60px rgba(0,0,0,0.45), 0 0 40px rgba(16,185,129,0.25)' }}
+                whileTap={{ y: -2, boxShadow: '0 14px 32px rgba(0,0,0,0.35), 0 0 22px rgba(16,185,129,0.18)' }}
+                transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.6 }}
+                aria-label="Visit zeploy.dev"
+              >
+                {/* full-card subtle glow outline on hover */}
+                <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent group-hover:border-[var(--primary)]/60 group-hover:shadow-[0_0_64px_rgba(16,185,129,0.35)] transition-[box-shadow,border-color]" />
+                {/* inner radial glow */}
+                <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.16),transparent_60%)]" />
+                {/* top-right link icon */}
+                <div className="absolute right-4 top-4 opacity-60 group-hover:opacity-90 transition-opacity">
+                  <span className="inline-flex items-center justify-center h-7 w-7 rounded-lg bg-white/5 border border-white/10">
+                    <ExternalLink size={14} />
+                  </span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="p-2 rounded-md bg-[var(--primary)]/10 border border-[var(--primary)]/20">
+                    <Globe className="text-[var(--primary)]" size={20} />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-bold">Zeploy — Web Dev Agency</h4>
+                    <p className="text-[var(--text-secondary)]">I founded Zeploy, building modern, fast websites and apps for clients as freelance gigs.</p>
+                    <span className="inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[var(--text-secondary)]">
+                      <ExternalLink size={12} />
+                      zeploy.dev
+                    </span>
+                  </div>
+                </div>
+              </motion.a>
+            </div>
           </motion.div>
         </div>
       </div>
